@@ -1,0 +1,27 @@
+{
+  "name": "product-and-overview",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hr-rfp55-sdc-ezlo/product-and-overview.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hr-rfp55-sdc-ezlo/product-and-overview/issues"
+  },
+  "homepage": "https://github.com/hr-rfp55-sdc-ezlo/product-and-overview#readme",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0"
+  }
+}
