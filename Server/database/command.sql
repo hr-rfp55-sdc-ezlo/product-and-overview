@@ -5,11 +5,6 @@ create database po;
 CREATE TABLE products (product_id INTEGER PRIMARY KEY, name TEXT, slogan TEXT, description TEXT, category TEXT, default_price INTEGER)
 COPY products FROM '/users/wanglibo/downloads/product.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true);
 
-CREATE TABLE features (id INTEGER PRIMARY KEY, product_id INTEGER FOREIGN KEY, feature TEXT, value TEXT);
-CREATE TABLE features (id INTEGER PRIMARY KEY, product_id INTEGER, feature TEXT, value TEXT, FOREIGN KEY (product_id));
-CREATE TABLE features (id INTEGER PRIMARY KEY, product_id INTEGER, feature TEXT, value TEXT, FOREIGN KEY product_id);
-
-CREATE TABLE features (id INTEGER PRIMARY KEY, product_id INTEGER, feature TEXT, value TEXT, FOREIGN KEY (product_id) );
 
 CREATE TABLE features (id INTEGER PRIMARY KEY, product_id INTEGER, feature TEXT, value TEXT);
 
