@@ -17,7 +17,6 @@ app.get('/products', (req, res) => {
 });
 
 app.get('/products/:product_id', (req, res) => {
-  console.log('😀', req);
   db.getOne(req.params.product_id, (err, data) => {
     if (err) {
       console.log('db.getOne err:', err);
@@ -31,9 +30,15 @@ app.get('/products/:product_id', (req, res) => {
 //   res.send({message: 'Hello From Server!'});
 // });
 
-// app.get('/products/:product_id/related', (req, res) => {
-//   res.send({message: 'Hello From Server!'});
-// });
+app.get('/products/:product_id/related', (req, res) => {
+  db.getRelated(req.params.product_id, (err, data) => {
+    if (err) {
+      console.log('db.getRelated err:', err);
+    } else {
+      res.send(data).status(200);
+    }
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
