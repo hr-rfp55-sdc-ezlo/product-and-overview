@@ -16,9 +16,16 @@ app.get('/products', (req, res) => {
   });
 });
 
-// app.get('/products/:product_id', (req, res) => {
-//   res.send({message: 'Hello From Server!'});
-// });
+app.get('/products/:product_id', (req, res) => {
+  console.log('😀', req);
+  db.getOne(req.params.product_id, (err, data) => {
+    if (err) {
+      console.log('db.getOne err:', err);
+    } else {
+      res.send(data).status(200);
+    }
+  });
+});
 
 // app.get('/products/:product_id/styles', (req, res) => {
 //   res.send({message: 'Hello From Server!'});

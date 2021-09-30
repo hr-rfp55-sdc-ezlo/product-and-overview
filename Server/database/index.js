@@ -18,9 +18,13 @@ var getAll = (cb) => {
   });
 };
 
-var getOne = (data) => {
-  pool.query('SELECT * FROM products WHERE product_id = 1', (err, res) => {
-    console.log('here', err, res);
+var getOne = (data, cb) => {
+  pool.query('SELECT * FROM products WHERE id = $1', [data], (err, res) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      cb(null, res.rows);
+    }
   });
 };
 
