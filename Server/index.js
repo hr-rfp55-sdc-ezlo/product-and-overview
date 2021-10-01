@@ -32,6 +32,7 @@ app.get('/products/:product_id/styles', (req, res) => {
     if (err) {
       console.log('db.getStyles err:', err);
     } else {
+      console.log(data);
       res.send(data).status(200);
     }
   });
@@ -42,7 +43,6 @@ app.get('/products/:product_id/related', (req, res) => {
     if (err) {
       console.log('db.getRelated err:', err);
     } else {
-      console.log('🥰', data);
       res.send(data).status(200);
     }
   });

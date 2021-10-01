@@ -36,11 +36,11 @@ var getOne = (data, cb) => {
 };
 
 var getStyles = (data, cb) => {
-  var final = {'product_id': data, results: []};
+  var final = {'product_id': data, results: null};
   pool.query("SELECT s.style_id, s.name, s.original_price, s.sale_price, s.default_style, array_agg(distinct jsonb_build_object('thumbnail_url', p.thumbnail_url, 'url', p.url)) as photos, json_object_agg(sk.id, json_build_object('quantity', sk.quantity, 'size', sk.size)) as skus FROM styles AS s INNER JOIN photos AS p ON p.style_id = s.style_id INNER JOIN skus AS sk ON sk.style_id = s.style_id WHERE s.product_id = $1 GROUP BY s.style_id", [data])
     .then(res => {
-      console.log(res.rows);
-      cb(null, res.rows);
+      final.results = res.rows;
+      cb(null, final);
     })
     .catch(err => cb(err, null));
 };
