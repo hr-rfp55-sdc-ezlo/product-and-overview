@@ -17,19 +17,10 @@ var getAll = (cb) => {
 
 var getOne = (data, cb) => {
   var result;
-  //TODO Improvement on Multiple Query
-  pool.query('SELECT * FROM products WHERE id = $1', [data])
+  pool.query("SELECT p.*, array_agg(distinct jsonb_build_object('feature', f.feature, 'value', f.value)) as features FROM products AS p INNER JOIN features AS f ON p.id = f.product_id WHERE p.id = $1 GROUP BY p.id", [data])
     .then(res => {
       return (
-        result = res.rows[0],
-        pool.query('SELECT feature, value FROM features WHERE product_id = $1', [data])
-          .then(response => {
-            return (
-              result.features = response.rows,
-              cb(null, result)
-            );
-          })
-          .catch(err => cb(err, null))
+        cb(null, res.rows[0])
       );
     })
     .catch(err => cb(err, null));
@@ -37,7 +28,7 @@ var getOne = (data, cb) => {
 
 var getStyles = (data, cb) => {
   var final = {'product_id': data, results: null};
-  pool.query("SELECT s.style_id, s.name, s.original_price, s.sale_price, s.default_style, array_agg(distinct jsonb_build_object('thumbnail_url', p.thumbnail_url, 'url', p.url)) as photos, json_object_agg(sk.id, json_build_object('quantity', sk.quantity, 'size', sk.size)) as skus FROM styles AS s INNER JOIN photos AS p ON p.style_id = s.style_id INNER JOIN skus AS sk ON sk.style_id = s.style_id WHERE s.product_id = $1 GROUP BY s.style_id", [data])
+  pool.query(`SELECT s.style_id, s.name, s.original_price, s.sale_price, s."default?", array_agg(distinct jsonb_build_object('thumbnail_url', p.thumbnail_url, 'url', p.url)) as photos, json_object_agg(sk.id, json_build_object('quantity', sk.quantity, 'size', sk.size)) as skus FROM styles AS s INNER JOIN photos AS p ON p.style_id = s.style_id INNER JOIN skus AS sk ON sk.style_id = s.style_id WHERE s.product_id = $1 GROUP BY s.style_id`, [data])
     .then(res => {
       final.results = res.rows;
       cb(null, final);

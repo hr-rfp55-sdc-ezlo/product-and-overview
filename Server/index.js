@@ -32,7 +32,6 @@ app.get('/products/:product_id/styles', (req, res) => {
     if (err) {
       console.log('db.getStyles err:', err);
     } else {
-      console.log(data);
       res.send(data).status(200);
     }
   });
