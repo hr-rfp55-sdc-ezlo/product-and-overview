@@ -25,6 +25,7 @@
     "sequelize": "^6.6.5"
   },
   "devDependencies": {
+    "artillery": "^1.7.9",
     "eslint": "^7.32.0",
     "nodemon": "^2.0.13"
   }

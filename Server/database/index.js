@@ -17,7 +17,11 @@ var getAll = (cb) => {
 
 var getOne = (data, cb) => {
   var result;
-  pool.query("SELECT p.*, array_agg(distinct jsonb_build_object('feature', f.feature, 'value', f.value)) as features FROM products AS p INNER JOIN features AS f ON p.id = f.product_id WHERE p.id = $1 GROUP BY p.id", [data])
+  pool.query(`SELECT p.*, COALESCE (array_agg(fMisc.combined) FILTER (WHERE fMisc.combined IS NOT NULL), '{}') as features
+    FROM products AS p
+    LEFT JOIN (SELECT features.product_id, features.combined FROM features) as fMisc ON p.id = fMisc.product_id
+    WHERE p.id = $1
+    GROUP BY p.id`, [data])
     .then(res => {
       return (
         cb(null, res.rows[0])
@@ -29,12 +33,16 @@ var getOne = (data, cb) => {
 var getStyles = (data, cb) => {
   var final = {'product_id': data, results: null};
   pool.query(`
-    SELECT a.style_id, a.name, a.original_price, a.sale_price, a."default?", array_agg(distinct jsonb_build_object('thumbnail_url', a.thumbnail_url, 'url', a.url)) as photos, json_object_agg(a.id, json_build_object('quantity', a.quantity, 'size', a.size)) as skus
-    FROM (SELECT s.style_id, s.name, s.original_price, s.sale_price, s."default?", p.thumbnail_url, p.url, sk.id, sk.quantity, sk.size FROM styles AS s
-    INNER JOIN (SELECT photos.style_id, photos.thumbnail_url, photos.url FROM photos) AS p ON p.style_id = s.style_id
-    INNER JOIN (SELECT skus.style_id, skus.id, skus.quantity, skus.size FROM skus) AS sk ON sk.style_id = s.style_id
-    WHERE s.product_id = $1 GROUP BY s.style_id, p.thumbnail_url, p.url, sk.id, sk.quantity, sk.size) AS a
-    GROUP BY a.style_id, a.name, a.original_price, a.sale_price, a."default?"`, [data])
+    SELECT s.style_id, s.name, s.original_price, s.sale_price, s."default?",
+      COALESCE (array_agg(distinct pLink.links) FILTER (WHERE pLink.links IS NOT NULL), '{}') as photos,
+      COALESCE (jsonb_object_agg(sOthers.id, sOthers.others) FILTER (WHERE sOthers.id IS NOT NULL AND sOthers.others IS NOT NULL), '[]') as skus
+    FROM styles AS s
+    LEFT JOIN (SELECT photos.style_id, photos.links FROM photos) as pLink
+      ON pLink.style_id = s.style_id
+    LEFT JOIN (SELECT skus.id, skus.style_id, skus.others FROM skus) as sOthers
+      ON sOthers.style_id = s.style_id
+    WHERE s.product_id = $1
+    GROUP BY s.style_id`, [data])
     .then(res => {
       final.results = res.rows;
       cb(null, final);
