@@ -1,3 +1,4 @@
+require('newrelic');
 const express = require('express');
 const app = express();
 const PORT = 3000;
@@ -26,9 +27,15 @@ app.get('/products/:product_id', (req, res) => {
   });
 });
 
-// app.get('/products/:product_id/styles', (req, res) => {
-//   res.send({message: 'Hello From Server!'});
-// });
+app.get('/products/:product_id/styles', (req, res) => {
+  db.getStyles(req.params.product_id, (err, data) => {
+    if (err) {
+      console.log('db.getStyles err:', err);
+    } else {
+      res.send(data).status(200);
+    }
+  });
+});
 
 app.get('/products/:product_id/related', (req, res) => {
   db.getRelated(req.params.product_id, (err, data) => {
