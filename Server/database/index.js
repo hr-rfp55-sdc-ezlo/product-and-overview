@@ -1,16 +1,16 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'po',
+  user: 'wanglibo',
+  host: '52.53.238.151',
+  database: 'awsdb',
   password: '',
   port: 5432,
   multipleStatements: true
 });
 
 var getAll = (cb) => {
-  pool.query('SELECT * FROM products WHERE id BETWEEN 1 AND 25')
+  pool.query('SELECT * FROM products WHERE product_id BETWEEN 1 AND 25')
     .then(res => cb(null, res.rows))
     .catch(err => cb(err, null));
 };
