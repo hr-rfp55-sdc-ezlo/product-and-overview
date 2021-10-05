@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:14
 WORKDIR /server/index.js
 COPY package.json /server/index.js
 RUN npm install

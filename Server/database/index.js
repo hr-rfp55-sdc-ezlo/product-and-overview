@@ -19,9 +19,9 @@ var getOne = (data, cb) => {
   var result;
   pool.query(`SELECT p.*, COALESCE (array_agg(json_build_object('value', fMisc.value, 'feature', fMisc.feature)) FILTER (WHERE fMisc.value IS NOT NULL), '{}') as features
     FROM products AS p
-    LEFT JOIN (SELECT features.product_id, features.feature, features.value FROM features) as fMisc ON p.id = fMisc.product_id
-    WHERE p.id = $1
-    GROUP BY p.id`, [data])
+    LEFT JOIN (SELECT features.product_id, features.feature, features.value FROM features) as fMisc ON p.product_id = fMisc.product_id
+    WHERE p.product_id = $1
+    GROUP BY p.product_id`, [data])
     .then(res => {
       return (
         cb(null, res.rows[0])
