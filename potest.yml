@@ -1,8 +1,8 @@
 config:
   target: http://localhost:3000
   phases:
-    - duration: 30
-      arrivalRate: 300
+    - duration: 10
+      arrivalRate: 1000
       name: Warm up
     # - duration: 120
     #   arrivalRate: 5
@@ -14,11 +14,11 @@ config:
 scenarios:
     - name: "Read"
       flow:
-        - get:
-            url: "/products"
-        - get:
-            url: "/products/40344"
-        - get:
-            url: "/products/40344/styles"
+        # - get:
+        #     url: "/products"
+        # - get:
+        #     url: "/products/40344"
+        # - get:
+        #     url: "/products/40344/styles"
         - get:
             url: "/products/40344/related"
