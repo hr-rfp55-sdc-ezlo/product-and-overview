@@ -34,7 +34,7 @@ var getStyles = (data, cb) => {
   var final = {'product_id': data, results: null};
   pool.query(`
     SELECT s.style_id, s.name, s.original_price, s.sale_price, s."default?",
-      COALESCE (array_agg(distinct jsonb_build_object('url', pLink.url, 'thumbnail_url', pLink.thumbnail_url)) FILTER (WHERE pLink.url IS NOT NULL), '{}') as photos,
+      COALESCE (array_agg(jsonb_build_object('url', pLink.url, 'thumbnail_url', pLink.thumbnail_url)) FILTER (WHERE pLink.url IS NOT NULL), '{}') as photos,
       COALESCE (jsonb_object_agg(sOthers.id, jsonb_build_object('size', sOthers.size, 'quantity', sOthers.quantity)) FILTER (WHERE sOthers.id IS NOT NULL), '[]') as skus
     FROM styles AS s
     LEFT JOIN (SELECT photos.style_id, photos.url, photos.thumbnail_url FROM photos) as pLink
