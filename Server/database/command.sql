@@ -23,7 +23,7 @@ ALTER TABLE photos ADD CONSTRAINT fk_photos_styles FOREIGN KEY (style_id) REFERE
 
 CREATE INDEX idx_features_product_id ON features(product_id);
 CREATE INDEX idx_photos_style_id ON photos(style_id);
-CREATE INDEX idx_skus_id ON skus(id);
+CREATE INDEX idx_skus_style_id ON skus(style_id);
 CREATE INDEX idx_related_product_id ON related(product_id);
 CREATE INDEX idx_related_related_product_id ON related(related_product_id);
 CREATE INDEX idx_styles_product_id ON styles(product_id);
