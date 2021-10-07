@@ -17,14 +17,14 @@ var getAll = (cb) => {
 
 var getOne = (data, cb) => {
   var result;
-  pool.query(`SELECT a.*, COALESCE (array_agg(json_build_object('value', a.value, 'feature', a.feature)) FILTER (WHERE a.value IS NOT NULL), '{}') as features
+  pool.query(`SELECT a.product_id as id, a.name, a.slogan, a.description, a.category, a.default_price, COALESCE (array_agg(json_build_object('value', a.value, 'feature', a.feature)) FILTER (WHERE a.value IS NOT NULL), '{}') as features
     FROM (
-      SELECT p.*, f.product_id, f.feature, f.value
+      SELECT p.*, f.product_id as f_product_id, f.feature, f.value
       FROM products as p
       LEFT JOIN features as f ON p.product_id = f.product_id
       WHERE p.product_id = $1
     ) as a
-    GROUP BY a.product_id`, [data])
+    GROUP BY a.product_id, a.name, a.slogan, a.description, a.category, a.default_price, a.f_product_id, a.feature, a.value`, [data])
     .then(res => {
       return (
         cb(null, res.rows[0])
@@ -37,7 +37,7 @@ var getStyles = (data, cb) => {
   var final = {'product_id': data, results: null};
   pool.query(`
     SELECT c.style_id, c.name, c.original_price, c.sale_price, c."default?",
-      COALESCE (array_agg(jsonb_build_object('url', c.url, 'thumbnail_url', c.thumbnail_url)) FILTER (WHERE c.url IS NOT NULL), '{}') as photos,
+      COALESCE (array_agg(distinct jsonb_build_object('url', c.url, 'thumbnail_url', c.thumbnail_url)) FILTER (WHERE c.url IS NOT NULL), '{}') as photos,
       COALESCE (jsonb_object_agg(c.id, jsonb_build_object('size', c.size, 'quantity', c.quantity)) FILTER (WHERE c.id IS NOT NULL), '[]') as skus
     FROM (
       SELECT s.style_id, s.name, s.original_price, s.sale_price, s."default?", p.url, p.thumbnail_url, sk.id, sk.size, sk.quantity
