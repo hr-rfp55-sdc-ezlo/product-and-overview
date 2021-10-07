@@ -3,3 +3,7 @@ SDC-DB.pem
 sdc-server.pem
 SDC-NGINX.pem
 SDC-Loader1.pem
+SDC-Loader2.pem
+newrelic.js
+newrelic_agent.log
+Dockerfile
