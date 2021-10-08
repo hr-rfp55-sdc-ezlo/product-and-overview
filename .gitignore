@@ -4,6 +4,8 @@ sdc-server.pem
 SDC-NGINX.pem
 SDC-Loader1.pem
 SDC-Loader2.pem
+SDC-Loader3.pem
+SDC-Xserver.pem
 newrelic.js
 newrelic_agent.log
 Dockerfile
